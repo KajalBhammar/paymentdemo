@@ -88,9 +88,10 @@ URL = f"https://{HOST}{RESOURCE}"
 # TARGET ORIGIN
 # ============================================================
 
-TARGET_ORIGIN = (
-    "https://underling-gab-document.ngrok-free.dev"
-)
+TARGET_ORIGIN = os.getenv(
+    "TARGET_ORIGIN",
+    "http://localhost:8000"
+).rstrip("/")
 
 
 # ============================================================
