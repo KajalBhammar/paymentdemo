@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Cybersource Payment Integration Demo</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #172033;
+            --muted: #6c7588;
+            --border: #e4e8f0;
+            --primary: #185adb;
+            --primary-dark: #1148b5;
+            --success: #16844a;
+            --success-bg: #eefaf3;
+            --success-border: #bce7cc;
+            --danger: #c93636;
+            --danger-bg: #fff3f3;
+            --danger-border: #f0c4c4;
+            --warning: #a15c00;
+            --warning-bg: #fff8e8;
+            --warning-border: #f3d99b;
+            --shadow: 0 20px 60px rgba(23, 32, 51, 0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, #eef4ff 0, transparent 35%),
+                radial-gradient(circle at top right, #f0f7ff 0, transparent 32%),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 32px 24px 60px;
+        }
+
+        /* =====================================================
+           TOP HEADER
+        ===================================================== */
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #185adb, #4b86f7);
+            color: white;
+            font-weight: 800;
+            font-size: 21px;
+            box-shadow: 0 8px 22px rgba(24, 90, 219, 0.22);
+        }
+
+        .brand-title {
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .test-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border: 1px solid var(--warning-border);
+            border-radius: 999px;
+            background: var(--warning-bg);
+            color: var(--warning);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+
+        .test-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e49316;
+            box-shadow: 0 0 0 4px rgba(228, 147, 22, 0.12);
+        }
+
+        /* =====================================================
+           MAIN CARD
+        ===================================================== */
+
+        .demo-card {
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero {
+            padding: 42px 42px 32px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(247, 250, 255, 0.8),
+                    rgba(255, 255, 255, 1)
+                );
+        }
+
+        .hero-label {
+            display: inline-block;
+            margin-bottom: 13px;
+            padding: 6px 10px;
+            border-radius: 7px;
+            background: #edf3ff;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.2;
+            letter-spacing: -0.035em;
+        }
+
+        .hero p {
+            max-width: 620px;
+            margin: 12px auto 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           STEPS
+        ===================================================== */
+
+        .steps-wrapper {
+            padding: 25px 42px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .steps {
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .step.active {
+            color: var(--primary);
+        }
+
+        .step.done {
+            color: var(--success);
+        }
+
+        .step-number {
+            width: 29px;
+            height: 29px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d7dce6;
+            border-radius: 50%;
+            background: white;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .step.active .step-number {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .step.done .step-number {
+            border-color: var(--success);
+            background: var(--success);
+            color: white;
+        }
+
+        .step-line {
+            height: 1px;
+            flex: 1;
+            min-width: 35px;
+            margin: 0 14px;
+            background: #dfe3eb;
+        }
+
+        /* =====================================================
+           CHECKOUT CONTENT
+        ===================================================== */
+
+        .checkout-body {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 38px 42px 42px;
+        }
+
+        .section-label {
+            margin-bottom: 10px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .amount-wrapper {
+            position: relative;
+            margin-bottom: 31px;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 750;
+        }
+
+        #amount {
+            width: 100%;
+            height: 64px;
+            padding: 0 82px 0 42px;
+            border: 1px solid #d9dee8;
+            border-radius: 12px;
+            outline: none;
+            background: #fff;
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 750;
+            transition: 0.2s;
+        }
+
+        #amount:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(24, 90, 219, 0.08);
+        }
+
+        .currency-code {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        /* =====================================================
+           PAYMENT METHODS
+        ===================================================== */
+
+        .payment-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 13px;
+        }
+
+        .payment-heading-title {
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .payment-heading-note {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 13px;
+        }
+
+        .payment-button {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 82px;
+            padding: 15px 17px;
+            text-align: left;
+            border: 1px solid #dfe3eb;
+            border-radius: 13px;
+            background: white;
+            cursor: pointer;
+            transition:
+                transform 0.15s,
+                border-color 0.15s,
+                box-shadow 0.15s,
+                background 0.15s;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+            border-color: #9cb9ef;
+            background: #fbfdff;
+            box-shadow: 0 9px 24px rgba(24, 90, 219, 0.08);
+        }
+
+        .payment-button:active {
+            transform: translateY(0);
+        }
+
+        .payment-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .method-icon {
+            width: 45px;
+            height: 45px;
+            flex: 0 0 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #f4f7fc;
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .method-name {
+            display: block;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 750;
+        }
+
+        .method-desc {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .method-arrow {
+            margin-left: auto;
+            color: #a2a9b7;
+            font-size: 18px;
+        }
+
+        /* =====================================================
+           SECURITY NOTE
+        ===================================================== */
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 23px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .lock-icon {
+            color: var(--success);
+        }
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        #loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 11px;
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid #dfe7f5;
+            border-radius: 10px;
+            background: #f7faff;
+            color: #42506a;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #d7e3f8;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        #error {
+            display: none;
+            margin-top: 24px;
+            padding: 16px 18px;
+            border: 1px solid var(--danger-border);
+            border-radius: 10px;
+            background: var(--danger-bg);
+            color: var(--danger);
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* =====================================================
+           CYBERSOURCE CONTAINER
+        ===================================================== */
+
+        .cybersource-area {
+            margin-top: 26px;
+        }
+
+        #paymentSelection,
+        #paymentScreen {
+            width: 100%;
+        }
+
+        #paymentSelection:not(:empty),
+        #paymentScreen:not(:empty) {
+            margin-top: 15px;
+        }
+
+        /* =====================================================
+           RESULT
+        ===================================================== */
+
+        #paymentResponse {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .result-card {
+            overflow: hidden;
+            border-radius: 16px;
+            background: white;
+        }
+
+        #paymentResponse.success .result-card {
+            border: 1px solid var(--success-border);
+        }
+
+        #paymentResponse.error .result-card {
+            border: 1px solid var(--danger-border);
+        }
+
+        .result-header {
+            padding: 30px;
+            text-align: center;
+        }
+
+        #paymentResponse.success .result-header {
+            background: var(--success-bg);
+        }
+
+        #paymentResponse.error .result-header {
+            background: var(--danger-bg);
+        }
+
+        .result-icon {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 13px;
+            border-radius: 50%;
+            color: white;
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        #paymentResponse.success .result-icon {
+            background: var(--success);
+        }
+
+        #paymentResponse.error .result-icon {
+            background: var(--danger);
+        }
+
+        .result-title {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .result-message {
+            margin: 7px auto 0;
+            max-width: 500px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .result-content {
+            padding: 24px 28px 27px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            overflow: hidden;
+        }
+
+        .result-item {
+            min-width: 0;
+            padding: 15px 17px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-item:nth-child(odd) {
+            border-right: 1px solid var(--border);
+        }
+
+        .result-item:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+
+        .result-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .result-value {
+            display: block;
+            overflow-wrap: anywhere;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .status-authorized {
+            color: var(--success);
+        }
+
+        .environment-value {
+            color: var(--warning);
+        }
+
+        /* =====================================================
+           RAW API RESPONSE
+        ===================================================== */
+
+        .api-details {
+            margin-top: 17px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            overflow: hidden;
+        }
+
+        .api-details summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 17px;
+            background: #fafbfc;
+            cursor: pointer;
+            list-style: none;
+            color: #39445a;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .api-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .api-details summary::after {
+            content: "⌄";
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .api-details[open] summary::after {
+            content: "⌃";
+        }
+
+        .raw-payload {
+            margin: 0;
+            max-height: 420px;
+            overflow: auto;
+            padding: 19px;
+            background: #111827;
+            color: #d6deeb;
+            font-family:
+                "SFMono-Regular",
+                Consolas,
+                "Liberation Mono",
+                monospace;
+            font-size: 11px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 18px;
+            padding: 0 5px;
+            color: #9299a8;
+            font-size: 10px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+            .page {
+                padding: 18px 12px 40px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .hero {
+                padding: 31px 20px 25px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .steps-wrapper {
+                padding: 20px;
+                overflow-x: auto;
+            }
+
+            .checkout-body {
+                padding: 27px 20px 30px;
+            }
+
+            .methods {
+                grid-template-columns: 1fr;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-item,
+            .result-item:nth-child(odd) {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .result-item:last-child {
+                border-bottom: none;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div>
+                <div class="brand-title">
+                    Cybersource Integration
+                </div>
+
+                <div class="brand-subtitle">
+                    Unified Checkout API Demonstration
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="test-badge">
+
+            <span class="test-dot"></span>
+
+            TEST MODE / SANDBOX
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN CARD
+    ====================================================== -->
+
+    <main class="demo-card">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+            <div class="hero-label">
+                Integration Demo
+            </div>
+
+            <h1>
+                <!-- Secure Payment Testing -->
+            </h1>
+
+            <!-- <p>
+                Demonstration of the Cybersource Unified Checkout
+                integration using the sandbox environment.
+                No real funds are transferred during this test.
+            </p> -->
+
+        </section>
+
+
+        <!-- =================================================
+             STEPS
+        ================================================== -->
+
+        <section class="steps-wrapper">
+
+            <div class="steps">
+
+                <div
+                    class="step active"
+                    id="step1"
+                >
+
+                    <span class="step-number">
+                        1
+                    </span>
+
+                    <span>
+                        Select Method
+                    </span>
+
+                </div>
+
+
+                <div class="step-line"></div>
+
+
+                <div
+                    class="step"
+                    id="step2"
+                >
+
+                    <span class="step-number">
+                        2
+                    </span>
+
+                    <span>
+                        Secure Payment
+                    </span>
+
+                </div>
+
+
+                <div class="step-line"></div>
+
+
+                <div
+                    class="step"
+                    id="step3"
+                >
+
+                    <span class="step-number">
+                        3
+                    </span>
+
+                    <span>
+                        API Response
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CHECKOUT
+        ================================================== -->
+
+        <section class="checkout-body">
+
+
+            <!-- =============================================
+                 AMOUNT
+            ============================================== -->
+
+            <div class="section-label">
+                Transaction Amount
+            </div>
+
+
+            <div class="amount-wrapper">
+
+                <span class="currency-symbol">
+                    $
+                </span>
+
+                <input
+                    id="amount"
+                    type="number"
+                    value="1.00"
+                    min="0.01"
+                    step="0.01"
+                    autocomplete="off"
+                >
+
+                <span class="currency-code">
+                    USD
+                </span>
+
+            </div>
+
+
+            <!-- =============================================
+                 PAYMENT METHODS
+            ============================================== -->
+
+            <div class="payment-heading">
+
+                <div class="payment-heading-title">
+                    Select Payment Method
+                </div>
+
+                <div class="payment-heading-note">
+                    Cybersource Unified Checkout
+                </div>
+
+            </div>
+
+
+            <div class="methods">
+
+
+                <!-- CARD -->
+
+                <button
+                    class="payment-button"
+                    onclick="startPayment('PANENTRY')"
+                >
+
+                    <span class="method-icon">
+                        💳
+                    </span>
+
+                    <span>
+
+                        <span class="method-name">
+                            Credit / Debit Card
+                        </span>
+
+                        <span class="method-desc">
+                            Visa · Mastercard · American Express
+                        </span>
+
+                    </span>
+
+                    <span class="method-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- CLICK TO PAY -->
+
+                <button
+                    class="payment-button"
+                    onclick="startPayment('CLICKTOPAY')"
+                >
+
+                    <span class="method-icon">
+                        ◉
+                    </span>
+
+                    <span>
+
+                        <span class="method-name">
+                            Click to Pay
+                        </span>
+
+                        <span class="method-desc">
+                            Secure digital checkout
+                        </span>
+
+                    </span>
+
+                    <span class="method-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- GOOGLE PAY -->
+
+                <button
+                    class="payment-button"
+                    onclick="startPayment('GOOGLEPAY')"
+                >
+
+                    <span class="method-icon">
+                        G
+                    </span>
+
+                    <span>
+
+                        <span class="method-name">
+                            Google Pay
+                        </span>
+
+                        <span class="method-desc">
+                            Digital wallet payment
+                        </span>
+
+                    </span>
+
+                    <span class="method-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <!-- ECHECK -->
+
+                <button
+                    class="payment-button"
+                    onclick="startPayment('CHECK')"
+                >
+
+                    <span class="method-icon">
+                        🏦
+                    </span>
+
+                    <span>
+
+                        <span class="method-name">
+                            eCheck
+                        </span>
+
+                        <span class="method-desc">
+                            Electronic bank payment
+                        </span>
+
+                    </span>
+
+                    <span class="method-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- =============================================
+                 SECURITY
+            ============================================== -->
+
+            <div class="security-note">
+
+                <span class="lock-icon">
+                    🔒
+                </span>
+
+                <span>
+                    Payment information is handled through
+                    Cybersource Unified Checkout
+                </span>
+
+            </div>
+
+
+            <!-- =============================================
+                 LOADING
+            ============================================== -->
+
+            <div id="loading">
+
+                <div class="spinner"></div>
+
+                <span id="loadingText">
+                    Creating secure payment session...
+                </span>
+
+            </div>
+
+
+            <!-- =============================================
+                 ERROR
+            ============================================== -->
+
+            <div id="error"></div>
+
+
+            <!-- =============================================
+                 CYBERSOURCE EMBEDDED UI
+            ============================================== -->
+
+            <div class="cybersource-area">
+
+                <div id="paymentSelection"></div>
+
+                <div id="paymentScreen"></div>
+
+            </div>
+
+
+            <!-- =============================================
+                 RESULT
+            ============================================== -->
+
+            <div id="paymentResponse"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <div class="footer">
+
+        <span>
+            Cybersource Unified Checkout Integration Demo
+        </span>
+
+        <span>
+            Environment: TEST / SANDBOX
+        </span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let loadedLibraryURL = null;
+
+    let paymentStarting = false;
+
+    let currentPaymentType = null;
+
+
+    // ============================================================
+    // BUTTON STATE
+    // ============================================================
+
+    function setButtonsDisabled(disabled) {
+
+        document
+            .querySelectorAll(".payment-button")
+            .forEach(button => {
+
+                button.disabled = disabled;
+
+            });
+    }
+
+
+    // ============================================================
+    // STEP INDICATOR
+    // ============================================================
+
+    function setStep(stepNumber) {
+
+        const step1 =
+            document.getElementById("step1");
+
+        const step2 =
+            document.getElementById("step2");
+
+        const step3 =
+            document.getElementById("step3");
+
+
+        [
+            step1,
+            step2,
+            step3
+        ].forEach(step => {
+
+            step.classList.remove(
+                "active",
+                "done"
+            );
+
+        });
+
+
+        if (stepNumber === 1) {
+
+            step1.classList.add("active");
+
+        }
+
+
+        if (stepNumber === 2) {
+
+            step1.classList.add("done");
+
+            step1.querySelector(
+                ".step-number"
+            ).textContent = "✓";
+
+            step2.classList.add("active");
+
+        }
+
+
+        if (stepNumber === 3) {
+
+            step1.classList.add("done");
+
+            step2.classList.add("done");
+
+            step1.querySelector(
+                ".step-number"
+            ).textContent = "✓";
+
+            step2.querySelector(
+                ".step-number"
+            ).textContent = "✓";
+
+            step3.classList.add("active");
+
+        }
+
+
+        if (stepNumber === 1) {
+
+            step1.querySelector(
+                ".step-number"
+            ).textContent = "1";
+
+            step2.querySelector(
+                ".step-number"
+            ).textContent = "2";
+
+            step3.querySelector(
+                ".step-number"
+            ).textContent = "3";
+
+        }
+
+    }
+
+
+    // ============================================================
+    // LOADING
+    // ============================================================
+
+    function showLoading(message) {
+
+        const loading =
+            document.getElementById("loading");
+
+        const loadingText =
+            document.getElementById("loadingText");
+
+
+        loadingText.textContent =
+            message;
+
+
+        loading.style.display =
+            "flex";
+    }
+
+
+    function hideLoading() {
+
+        document.getElementById(
+            "loading"
+        ).style.display = "none";
+
+    }
+
+
+    // ============================================================
+    // ERROR
+    // ============================================================
+
+    function showError(message) {
+
+        const box =
+            document.getElementById("error");
+
+
+        box.textContent =
+            message;
+
+
+        box.style.display =
+            "block";
+
+    }
+
+
+    function clearError() {
+
+        const box =
+            document.getElementById("error");
+
+
+        box.textContent =
+            "";
+
+
+        box.style.display =
+            "none";
+
+    }
+
+
+    // ============================================================
+    // CLEAR RESULT
+    // ============================================================
+
+    function clearResponse() {
+
+        const box =
+            document.getElementById(
+                "paymentResponse"
+            );
+
+
+        box.innerHTML =
+            "";
+
+
+        box.className =
+            "";
+
+
+        box.style.display =
+            "none";
+
+    }
+
+
+    // ============================================================
+    // HTML ESCAPE
+    // ============================================================
+
+    function escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    // ============================================================
+    // DECODE JWT
+    //
+    // IMPORTANT:
+    // This decodes the JWT only for display.
+    // It does not cryptographically verify the JWT.
+    // ============================================================
+
+    function decodeJWT(token) {
+
+        if (
+            typeof token !== "string"
+        ) {
+
+            return token;
+
+        }
+
+
+        const parts =
+            token.split(".");
+
+
+        if (
+            parts.length !== 3
+        ) {
+
+            throw new Error(
+                "Invalid Cybersource JWT response."
+            );
+
+        }
+
+
+        let payload =
+            parts[1]
+                .replace(/-/g, "+")
+                .replace(/_/g, "/");
+
+
+        while (
+            payload.length % 4
+        ) {
+
+            payload += "=";
+
+        }
+
+
+        const binary =
+            atob(payload);
+
+
+        const bytes =
+            Uint8Array.from(
+
+                binary,
+
+                character =>
+                    character.charCodeAt(0)
+
+            );
+
+
+        const decoded =
+            new TextDecoder(
+                "utf-8"
+            ).decode(bytes);
+
+
+        return JSON.parse(
+            decoded
+        );
+
+    }
+
+
+    // ============================================================
+    // FIND VALUE INSIDE JWT
+    // ============================================================
+
+    function findValue(
+        object,
+        key
+    ) {
+
+        if (
+            object === null ||
+            object === undefined
+        ) {
+
+            return null;
+
+        }
+
+
+        if (
+            typeof object === "object" &&
+            Object.prototype
+                .hasOwnProperty
+                .call(object, key)
+        ) {
+
+            return object[key];
+
+        }
+
+
+        if (
+            typeof object === "object"
+        ) {
+
+            for (
+                const value
+                of Object.values(object)
+            ) {
+
+                const result =
+                    findValue(
+                        value,
+                        key
+                    );
+
+
+                if (
+                    result !== null
+                ) {
+
+                    return result;
+
+                }
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    // ============================================================
+    // PAYMENT TYPE LABEL
+    // ============================================================
+
+    function paymentTypeLabel(type) {
+
+        const labels = {
+
+            PANENTRY:
+                "Credit / Debit Card",
+
+            CLICKTOPAY:
+                "Click to Pay",
+
+            GOOGLEPAY:
+                "Google Pay",
+
+            CHECK:
+                "eCheck"
+
+        };
+
+
+        return labels[type] || type || "-";
+
+    }
+
+
+    // ============================================================
+    // SHOW TRANSACTION RESULT
+    // ============================================================
+
+    function showTransactionResult(result) {
+
+        const box =
+            document.getElementById(
+                "paymentResponse"
+            );
+
+
+        try {
+
+            // ====================================================
+            // DECODE RESPONSE
+            // ====================================================
+
+            const decoded =
+                typeof result === "string"
+                    ? decodeJWT(result)
+                    : result;
+
+
+            console.log(
+                "Decoded Cybersource Response:",
+                decoded
+            );
+
+
+            const details =
+                decoded.details || {};
+
+
+            const amountDetails =
+                details
+                    .orderInformation
+                    ?.amountDetails || {};
+
+
+            const processor =
+                details
+                    .processorInformation || {};
+
+
+            const clientReference =
+                details
+                    .clientReferenceInformation
+                    ?.code || "-";
+
+
+            // ====================================================
+            // VALUES
+            // ====================================================
+
+            const status =
+                decoded.status ||
+                "UNKNOWN";
+
+
+            const outcome =
+                decoded.outcome ||
+                "UNKNOWN";
+
+
+            const message =
+                decoded.message ||
+                "";
+
+
+            const amount =
+                amountDetails.authorizedAmount ||
+                amountDetails.totalAmount ||
+                "-";
+
+
+            const currency =
+                amountDetails.currency ||
+                "USD";
+
+
+            const transactionId =
+                processor.transactionId ||
+                decoded.id ||
+                "-";
+
+
+            const cybersourceId =
+                decoded.id ||
+                "-";
+
+
+            const approvalCode =
+                processor.approvalCode ||
+                "-";
+
+
+            const responseCode =
+                processor.responseCode ||
+                "-";
+
+
+            const networkTransactionId =
+                processor.networkTransactionId ||
+                "-";
+
+
+            const retrievalReference =
+                processor.retrievalReferenceNumber ||
+                "-";
+
+
+            const reconciliationId =
+                details.reconciliationId ||
+                "-";
+
+
+            const submitTime =
+                details.submitTimeUtc ||
+                "-";
+
+
+            // ====================================================
+            // SUCCESS CHECK
+            // ====================================================
+
+            const successfulStatuses = [
+                "AUTHORIZED",
+                "SUCCEEDED",
+                "COMPLETED",
+                "CAPTURED"
+            ];
+
+
+            const successful =
+                successfulStatuses.includes(
+                    String(status).toUpperCase()
+                )
+                ||
+                successfulStatuses.includes(
+                    String(outcome).toUpperCase()
+                );
+
+
+            // ====================================================
+            // RESULT STATE
+            // ====================================================
+
+            box.className =
+                successful
+                    ? "success"
+                    : "error";
+
+
+            // ====================================================
+            // RAW JSON
+            // ====================================================
+
+            const rawJSON =
+                JSON.stringify(
+                    decoded,
+                    null,
+                    2
+                );
+
+
+            // ====================================================
+            // TITLE
+            // ====================================================
+
+            const title =
+                successful
+                    ? "Test Transaction Authorized"
+                    : "Test Transaction Unsuccessful";
+
+
+            const description =
+                successful
+                    ? (
+                        message ||
+                        "Cybersource successfully processed the sandbox request."
+                    )
+                    : (
+                        message ||
+                        "The sandbox transaction was not authorized."
+                    );
+
+
+            // ====================================================
+            // DISPLAY
+            // ====================================================
+
+            box.innerHTML = `
+
+                <div class="result-card">
+
+
+                    <div class="result-header">
+
+                        <div class="result-icon">
+
+                            ${successful ? "✓" : "×"}
+
+                        </div>
+
+
+                        <h2 class="result-title">
+
+                            ${escapeHTML(title)}
+
+                        </h2>
+
+
+                        <div class="result-message">
+
+                            ${escapeHTML(description)}
+
+                            <br>
+
+                            This is a Cybersource TEST /
+                            SANDBOX transaction.
+                            No real funds were transferred.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-content">
+
+
+                        <div class="result-grid">
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Status
+                                </span>
+
+                                <span
+                                    class="result-value
+                                    ${successful ? "status-authorized" : ""}"
+                                >
+                                    ${escapeHTML(status)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Outcome
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(outcome)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Amount
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(currency)}
+                                    ${escapeHTML(amount)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Payment Method
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(
+                                        paymentTypeLabel(
+                                            currentPaymentType
+                                        )
+                                    )}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Transaction ID
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(transactionId)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Approval Code
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(approvalCode)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Processor Response
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(responseCode)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Environment
+                                </span>
+
+                                <span
+                                    class="result-value environment-value"
+                                >
+                                    TEST / SANDBOX
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Client Reference
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(clientReference)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Cybersource ID
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(cybersourceId)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Network Transaction ID
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(networkTransactionId)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Retrieval Reference
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(retrievalReference)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Reconciliation ID
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(reconciliationId)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="result-item">
+
+                                <span class="result-label">
+                                    Submit Time UTC
+                                </span>
+
+                                <span class="result-value">
+                                    ${escapeHTML(submitTime)}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <details class="api-details">
+
+                            <summary>
+                                View Full Cybersource API Response
+                            </summary>
+
+                            <pre class="raw-payload">${escapeHTML(rawJSON)}</pre>
+
+                        </details>
+
+
+                    </div>
+
+                </div>
+            `;
+
+
+            box.style.display =
+                "block";
+
+
+            // ====================================================
+            // STEP 3
+            // ====================================================
+
+            setStep(3);
+
+
+            // ====================================================
+            // SCROLL TO RESULT
+            // ====================================================
+
+            box.scrollIntoView({
+
+                behavior:
+                    "smooth",
+
+                block:
+                    "start"
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Unable to decode Cybersource response:",
+                error
+            );
+
+
+            box.className =
+                "error";
+
+
+            box.style.display =
+                "block";
+
+
+            box.innerHTML = `
+
+                <div class="result-card">
+
+                    <div class="result-header">
+
+                        <div class="result-icon">
+                            ×
+                        </div>
+
+                        <h2 class="result-title">
+                            Transaction Response Error
+                        </h2>
+
+                        <div class="result-message">
+                            Unable to read the Cybersource
+                            transaction response.
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    // ============================================================
+    // LOAD CYBERSOURCE SDK
+    // ============================================================
+
+    function loadCybersourceSDK(
+        libraryURL,
+        integrity
+    ) {
+
+        return new Promise(
+            (
+                resolve,
+                reject
+            ) => {
+
+
+                // ====================================================
+                // ALREADY LOADED
+                // ====================================================
+
+                if (
+                    loadedLibraryURL === libraryURL &&
+                    typeof Accept !== "undefined"
+                ) {
+
+                    resolve();
+
+                    return;
+
+                }
+
+
+                // ====================================================
+                // REMOVE OLD SDK
+                // ====================================================
+
+                const oldScript =
+                    document.getElementById(
+                        "cybersource-sdk"
+                    );
+
+
+                if (
+                    oldScript
+                ) {
+
+                    oldScript.remove();
+
+                }
+
+
+                // ====================================================
+                // CREATE SCRIPT
+                // ====================================================
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
+
+
+                script.id =
+                    "cybersource-sdk";
+
+
+                script.src =
+                    libraryURL;
+
+
+                script.crossOrigin =
+                    "anonymous";
+
+
+                if (
+                    integrity
+                ) {
+
+                    script.integrity =
+                        integrity;
+
+                }
+
+
+                // ====================================================
+                // TIMEOUT
+                // ====================================================
+
+                const timeout =
+                    setTimeout(
+                        () => {
+
+                            reject(
+                                new Error(
+                                    "Cybersource SDK took too long to load."
+                                )
+                            );
+
+                        },
+                        20000
+                    );
+
+
+                // ====================================================
+                // LOADED
+                // ====================================================
+
+                script.onload =
+                    () => {
+
+                        clearTimeout(
+                            timeout
+                        );
+
+
+                        loadedLibraryURL =
+                            libraryURL;
+
+
+                        if (
+                            typeof Accept ===
+                            "undefined"
+                        ) {
+
+                            reject(
+                                new Error(
+                                    "Cybersource SDK loaded but Accept() was not found."
+                                )
+                            );
+
+                            return;
+
+                        }
+
+
+                        resolve();
+
+                    };
+
+
+                // ====================================================
+                // FAILED
+                // ====================================================
+
+                script.onerror =
+                    () => {
+
+                        clearTimeout(
+                            timeout
+                        );
+
+
+                        reject(
+                            new Error(
+                                "Unable to load Cybersource SDK."
+                            )
+                        );
+
+                    };
+
+
+                document.head.appendChild(
+                    script
+                );
+
+            }
+        );
+
+    }
+
+
+    // ============================================================
+    // GET CAPTURE CONTEXT
+    // ============================================================
+
+    async function getCaptureContext(
+        paymentType,
+        amount
+    ) {
+
+        const controller =
+            new AbortController();
+
+
+        const timeout =
+            setTimeout(
+                () => {
+
+                    controller.abort();
+
+                },
+                20000
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/capture-context",
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify(
+                                {
+
+                                    paymentType:
+                                        paymentType,
+
+                                    amount:
+                                        amount
+
+                                }
+                            ),
+
+                        signal:
+                            controller.signal
+
+                    }
+                );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            }
+
+            catch {
+
+                throw new Error(
+                    "Invalid response from server."
+                );
+
+            }
+
+
+            if (
+                !response.ok
+            ) {
+
+                let message =
+                    data.detail ||
+                    "Unable to create payment session.";
+
+
+                try {
+
+                    const parsed =
+                        JSON.parse(
+                            message
+                        );
+
+
+                    message =
+                        parsed.message ||
+                        parsed.reason ||
+                        message;
+
+                }
+
+                catch {
+                }
+
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            if (
+                !data.captureContext
+            ) {
+
+                throw new Error(
+                    "Capture Context was not returned."
+                );
+
+            }
+
+
+            // ====================================================
+            // SAVE LOG REFERENCES IF BACKEND RETURNS THEM
+            // ====================================================
+
+            if (
+                data.requestId
+            ) {
+
+                window.currentRequestId =
+                    data.requestId;
+
+            }
+
+
+            if (
+                data.clientReference
+            ) {
+
+                window.currentClientReference =
+                    data.clientReference;
+
+            }
+
+
+            return data.captureContext;
+
+        }
+
+        finally {
+
+            clearTimeout(
+                timeout
+            );
+
+        }
+
+    }
+
+
+    // ============================================================
+    // START PAYMENT
+    // ============================================================
+
+    async function startPayment(
+        paymentType
+    ) {
+
+        if (
+            paymentStarting
+        ) {
+
+            return;
+
+        }
+
+
+        currentPaymentType =
+            paymentType;
+
+
+        window.currentPaymentType =
+            paymentType;
+
+
+        clearError();
+
+        clearResponse();
+
+        setStep(1);
+
+
+        // ========================================================
+        // AMOUNT
+        // ========================================================
+
+        const amount =
+            document
+                .getElementById(
+                    "amount"
+                )
+                .value
+                .trim();
+
+
+        if (
+            !amount ||
+            Number(amount) <= 0
+        ) {
+
+            showError(
+                "Please enter a valid transaction amount."
+            );
+
+            return;
+
+        }
+
+
+        paymentStarting =
+            true;
+
+
+        setButtonsDisabled(
+            true
+        );
+
+
+        // ========================================================
+        // CLEAR OLD CYBERSOURCE UI
+        // ========================================================
+
+        document.getElementById(
+            "paymentSelection"
+        ).innerHTML = "";
+
+
+        document.getElementById(
+            "paymentScreen"
+        ).innerHTML = "";
+
+
+        try {
+
+            // ====================================================
+            // STEP 1 - CAPTURE CONTEXT
+            // ====================================================
+
+            showLoading(
+                "Creating secure Cybersource payment session..."
+            );
+
+
+            const captureContext =
+                await getCaptureContext(
+                    paymentType,
+                    amount
+                );
+
+
+            // ====================================================
+            // DECODE CAPTURE CONTEXT
+            // ====================================================
+
+            const captureData =
+                decodeJWT(
+                    captureContext
+                );
+
+
+            // ====================================================
+            // GET SDK
+            // ====================================================
+
+            const clientLibrary =
+                findValue(
+                    captureData,
+                    "clientLibrary"
+                );
+
+
+            const integrity =
+                findValue(
+                    captureData,
+                    "clientLibraryIntegrity"
+                );
+
+
+            if (
+                !clientLibrary
+            ) {
+
+                throw new Error(
+                    "Cybersource did not return clientLibrary."
+                );
+
+            }
+
+
+            // ====================================================
+            // LOAD SDK
+            // ====================================================
+
+            showLoading(
+                "Loading Cybersource Unified Checkout..."
+            );
+
+
+            await loadCybersourceSDK(
+                clientLibrary,
+                integrity
+            );
+
+
+            // ====================================================
+            // INITIALIZE
+            // ====================================================
+
+            showLoading(
+                "Opening secure payment form..."
+            );
+
+
+            const accept =
+                await Accept(
+                    captureContext
+                );
+
+
+            const unifiedPayment =
+                await accept
+                    .unifiedPayments(
+                        false
+                    );
+
+
+            // ====================================================
+            // CYBERSOURCE CONTAINERS
+            // ====================================================
+
+            const showArgs = {
+
+                containers: {
+
+                    paymentSelection:
+                        "#paymentSelection",
+
+                    paymentScreen:
+                        "#paymentScreen"
+
+                }
+
+            };
+
+
+            // ====================================================
+            // STEP 2
+            // ====================================================
+
+            setStep(2);
+
+
+            /*
+             * IMPORTANT:
+             *
+             * show() remains pending while the customer interacts
+             * with Cybersource Unified Checkout.
+             *
+             * Therefore the loading indicator must be hidden
+             * before awaiting show().
+             */
+
+            hideLoading();
+
+
+            paymentStarting =
+                false;
+
+
+            setButtonsDisabled(
+                false
+            );
+
+
+            // ====================================================
+            // SHOW REAL CYBERSOURCE UI
+            // ====================================================
+
+            const transientToken =
+                await unifiedPayment.show(
+                    showArgs
+                );
+
+
+            console.log(
+                "Cybersource transient token received."
+            );
+
+
+            // ====================================================
+            // PROCESS TRANSACTION
+            // ====================================================
+
+            showLoading(
+                "Processing sandbox transaction with Cybersource..."
+            );
+
+
+            setButtonsDisabled(
+                true
+            );
+
+
+            const completeResponse =
+                await unifiedPayment.complete(
+                    transientToken
+                );
+
+
+            console.log(
+                "Cybersource complete response received."
+            );
+
+
+            // ====================================================
+            // DISPLAY RESULT
+            // ====================================================
+
+            hideLoading();
+
+
+            showTransactionResult(
+                completeResponse
+            );
+
+
+            setButtonsDisabled(
+                false
+            );
+
+
+            paymentStarting =
+                false;
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Cybersource payment error:",
+                error
+            );
+
+
+            hideLoading();
+
+
+            paymentStarting =
+                false;
+
+
+            setButtonsDisabled(
+                false
+            );
+
+
+            if (
+                error.name ===
+                "AbortError"
+            ) {
+
+                showError(
+                    "Cybersource request timed out. Please try again."
+                );
+
+                return;
+
+            }
+
+
+            const message =
+                error.message ||
+                String(error);
+
+
+            showError(
+                message
+            );
+
+        }
+
+    }
+
+
+    // ============================================================
+    // INITIAL STATE
+    // ============================================================
+
+    setStep(1);
+
+</script>
+
+</body>
+
+</html>
