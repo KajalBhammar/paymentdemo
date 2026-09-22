@@ -382,12 +382,11 @@ async def home(
 
     return templates.TemplateResponse(
 
-        "index.html",
+        request=request,
 
-        {
+        name="index.html",
 
-            "request":
-                request,
+        context={
 
             "environment":
                 ENV
